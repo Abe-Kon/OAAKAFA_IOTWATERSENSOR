@@ -1,8 +1,6 @@
 <?php
 require "midsem.php";
 
-$con = mysqli_connect($servername,$username,$password,$dbname);
-
 $owner_id= $_GET['owner_id'];
 $place= $_GET['place'];
 $distance_cm=$_GET['level'];
