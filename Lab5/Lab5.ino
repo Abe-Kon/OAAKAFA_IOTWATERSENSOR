@@ -5,12 +5,14 @@
 #include <LiquidCrystal_I2C.h>
 
 void lcdprint(float distance__cm);
+void empty_tank(float distance__cm);
 
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 
 int trigger_pin = 5;
 int echo_pin   = 18;
+int led_pin = 23;
 
 // Replace with your network credentials
 const char* ssid = "Ttbi";
@@ -25,6 +27,7 @@ void setup() {
   Serial.begin(115200);
   pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
+  pinMode(led_pin, OUTPUT);
   delay(1000);
 
   // WiFi.begin(ssid, password);
@@ -65,6 +68,7 @@ void loop() {
   distance_cm = (duration / 2) / 29.09;
   //Serial.println(distance_cm);
   lcdprint(distance_cm);
+  empty_tank(distance_cm);
 
   // server.handleClient();
   delay(3000);
@@ -81,4 +85,15 @@ void lcdprint(float distance__cm){
   lcd.setCursor(0,1);
   lcd.print(String(distance__cm));
   lcd.print("cm");
+}
+
+void empty_tank(float distance__cm){
+  if(distance__cm<15.00) {
+    digitalWrite(led_pin, HIGH);
+    if(distance__cm>=100.0)
+    digitalWrite(led_pin, LOW);
+  }
+  else{
+    digitalWrite(led_pin,LOW);
+  }
 }
