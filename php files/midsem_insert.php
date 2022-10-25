@@ -1,5 +1,11 @@
 <?php
-require "midsem.php";
+
+$servername= "localhost";
+$username="root";
+$password="";
+$dbname="waterworks";
+$con = mysqli_connect($servername,$username,$password,$dbname);
+
 
 $owner_id= $_GET['owner_id'];
 $place= $_GET['place'];
