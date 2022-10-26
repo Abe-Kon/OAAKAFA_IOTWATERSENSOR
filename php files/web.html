@@ -1,62 +1,261 @@
 <!DOCTYPE html>
-<HTML>
+
+<html>
+
 <head>
-	<title>Page title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>midsemproject</title>
+    <!--<link href="style.css" rel="stylesheet" type="text/css" />-->
+    <meta name="Author" content="Akwasi Fredua Agyemang">
+    <style>
+        body {
+            margin-top: 50px;
+            font-family: Arial
+        }
+
+        body {
+            font-size: 20px;
+            text-align: center
+        }
+       
+        .btn {
+            display: block;
+            width: 280px;
+            margin: auto;
+            padding: 30px
+        }
+
+        .btn {
+            font-size: 30px;
+            color: black;
+            text-decoration: none
+        }
+        
+        .on {
+            background-color: SkyBlue
+        }
+
+        .off {
+            background-color: LightSteelBlue
+        }
+
+        .zero {
+            background-color: Thistle
+        }
+        .center 
+        {
+            margin-left: auto;
+            margin-right: auto;
+        }
+       
+
+        td {
+            font-size: 30px;
+            margin-top: 50px;
+            margin-bottom: 5px
+        }    
+
+        p {
+            font-size: 30px;
+            margin-top: 50px;
+            margin-bottom: 5px
+        }
+    </style>
 </head>
+
 <body>
-	<h1> Illustrating AJAX and JS</h1>
-	<p>After interacting with the page, you can refresh the page to start over again.</p>
+    <nav class="navbar bg-light">
+        <!--<div class="container-fluid">-->
+        <a class="navbar-brand" href="#">
+            <img src="iot_logo.jpg" alt="Logo" width="40" height="55" class="d-inline-block align-text-top">
+            <h4>
+                <t>IOT PROJECT BY AKWASI, JIL AND ABENA</t>
+            </h4>
+        </a>
+    </nav>
+    <section>
+        <h1>
+            <p1>Water Level Dashboard</p1><br />
+        </h1>
 
-	<h2> Illustrating with JS</h2>
-	<p>Changing next text with JS only: 
-		<div style="color:red;" id="js_update">Currently reads INITAL TEXT</div>
-	</p>
-	<button onclick="updateByJS()"> Click to change text </button>
+        <h1>Illustrating AJAX fetch of dynamic content</h1>
+    <p> we will fetch details of one particular record in the db. You can enter an ID if you know one (eg id=1,...,6) </p>
 
-	
-	<hr />
-	<h1>Illustrating AJAX fetch of static text</h1>
-	<p> The text at the end will be replaced by static text fetched over the network: </p>
-		<div id="statictext"></div>
-		<button onclick="updateByAJAX_static()"> Click to insert text in page </button>
+    <p>Enter a unique owner_id<input type="text" id="theText">  </p>
+    <p> <button onclick="updateByAJAX_dbData()">Fetch info</button></p>
+    <p><div id="waterworks"></div></p>
 
-	<h1>Illustrating AJAX fetch of dynamic content</h1>
-	<p> we will fetch details of one particular record in the db. You can enter an ID if you know one (eg id=1,...,6) </p>
+        
+<!--
+    
+        <table style = 'width:100%' class="table table-hover">
 
-	<p>Enter a unique owner_id<input type="text" id="theText">  </p>
-	<p> <button onclick="updateByAJAX_dbData()">Fetch info</button></p>
-	<p> returned data is <div id="waterworks"></div></p>
+            <thead>
+                <tr>
+                    <th scope="col">Tank#</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Water Level</th>
+                </tr>
+                
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+            </tbody>
 
-		
+        -->
+        <br /><br />
+        <table style='width:117%'>
+            <tr>
+                <td>Manual</td>
+                <td>Automatic</td>
+            </tr>
+            <tr id="stat" onclick='sendData(id)' style="font-size:50px">Operation Mode</tr>
+        </table>
+        <table style='width:100%'>
 
-	<script type="text/javascript">
-		var counter=0;
-		function updateByJS(){
-			counter++;
-			document.getElementById("js_update").innerText="This is the New Text, number of times pressed ="+counter;
-		}
+            <tr><td><b-button pill class='btn off' id='Green LED' onclick='sendData(id)'>OFF</b-button></td>-->
+            
+            <td><b-button pill class='btn off' id='Gren LED' onclick='sendData(id)'>OFF</b-button></td></tr><br/>
+                <!--<div class="bg">
+                    <ul>
+                        <li><a><b-button class="btn btn-secondary dropdown-toggle btn off" type="button" data-bs-toggle="dropdown" aria-expanded="false" id='Green LED' onclick='sendData(id)'>OFF</a></b-button></td>-->
+            <tr><td><b-button pill class='btn off' id='Start' style = "font-size:20px;width:50px;" onclick='sendData(id)'>START</b-button></td></tr>
+            <tr><td><b-button pill class='btn off' id='Stop' style = "font-size:20px;width:50px;" onclick='sendData(id)'>STOP</b-button></td></tr></table>
+                    
+                
+                
+           
 
-		function updateByAJAX_static(){
-			const xhttp=new XMLHttpRequest();
-			xhttp.onload=function(){
-				document.getElementById("statictext").innerText=this.responseText;
-			}
-			xhttp.open("GET", "/iot/get.php");
-			xhttp.send();
-		}
-		function updateByAJAX_dbData(){
-			const xhttp=new XMLHttpRequest();
-			xhttp.onload=function(){
-				document.getElementById("waterworks").innerText=this.responseText;
-			}
-			id=document.getElementById("theText").value;
-			console.log(id);
-			xhttp.open("GET", "/iot/get.php?owner_id="+id);
-			xhttp.send();
-		}
 
-	</script>
 
+        <script>
+            function sendData(butn) {
+                var URL, variab, text;
+                if (butn == 'Green LED') {
+                    URL = 'LEDRurl';
+                    variab = 'LEDR';
+                }
+                else if (butn == 'Gren LED') {
+                    URL = 'LEDGurl';
+                    variab = 'LEDG';
+                }
+                else if (butn == 'Start') {
+                    URL = 'STAurl';
+                    variab = 'STA';
+                }
+                else if (butn == 'Stop') {
+                    URL = 'STOurl';
+                    variab = 'STO';
+                }
+
+                // change button class and text 
+                if (butn == 'Gren LED') {
+                    var state = document.getElementById(butn).className;
+                    state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    text = (state == 'btn on' ? ' ON' : ' OFF');
+                    document.getElementById(butn).className = state;
+                    document.getElementById(butn).innerHTML = text;
+                    
+                    
+                }
+                if(butn == 'Stop'){
+                        var state = document.getElementById(butn).className;
+                        state = (state == 'btn on' ? 'btn off' : 'btn on');
+                        text = (state == 'btn on' ? ' ON' : ' OFF');
+                        document.getElementById(butn).className = state;
+                        document.getElementById(butn).innerHTML = text;
+                    }
+                    if(butn == 'Start'){
+                        var state = document.getElementById(butn).className;
+                        state = (state == 'btn on' ? 'btn off' : 'btn on');
+                        text = (state == 'btn on' ? ' ON' : ' OFF');
+                        document.getElementById(butn).className = state;
+                        document.getElementById(butn).innerHTML = text;
+                    }
+
+                else if(butn == 'Green LED'){
+                    var state = document.getElementById(butn).className;
+                    state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    text = (state == 'btn on' ? ' ON' : ' OFF');
+                    document.getElementById(butn).className = state;
+                    document.getElementById(butn).innerHTML = text; 
+                      
+                }
+
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function (butn) {
+                    if (this.readyState == 4 && this.status == 200)
+                        document.getElementById(variab).innerHTML = this.
+                            responseText;
+                };
+                xhr.open('GET', URL, true);
+                xhr.send();
+            }
+            setInterval(reload, 1000);
+            function reload() {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200)
+                        document.getElementById('counter').innerHTML = this.
+                            responseText;
+                };
+                xhr.open('GET', 'countUrl', true);
+                xhr.send();
+            }
+        </script>
+
+            <script type="text/javascript">
+        var counter=0;
+        function updateByJS(){
+            counter++;
+            document.getElementById("js_update").innerText="This is the New Text, number of times pressed ="+counter;
+        }
+
+        function updateByAJAX_static(){
+            const xhttp=new XMLHttpRequest();
+            xhttp.onload=function(){
+                document.getElementById("statictext").innerText=this.responseText;
+            }
+            xhttp.open("GET", "/iot/get.php");
+            xhttp.send();
+        }
+        function updateByAJAX_dbData(){
+            const xhttp=new XMLHttpRequest();
+            xhttp.onload=function(){
+                console.log(this.responseText);
+                document.getElementById("waterworks").innerHTML=this.responseText;
+            }
+            id=document.getElementById("theText").value;
+            console.log(id);
+            
+
+            xhttp.open("GET", "/iot/get.php?owner_id="+id);
+            xhttp.send();
+        }
+
+    
+        </script>
+
+    </section>
 </body>
 
-</HTML>
+</html>
