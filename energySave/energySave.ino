@@ -69,6 +69,7 @@ void loop() {
     long duration = pulseIn(echo_pin, HIGH);
     distance_cm = (duration / 2) / 29.09;
 
+    lcd.backlight(); //turn on backlight
     lcdprint(distance_cm);
     empty_tank(distance_cm);
     delay(3000);
@@ -102,6 +103,7 @@ void loop() {
           
     }
   void sleep_wake();
+  lcd.noBacklight();
 }
 
 // void tank_system(){
@@ -113,11 +115,9 @@ void sleep_wake(){
       //Serial.println("Going to sleep now");
       delay(1000);
       Serial.flush(); 
-      lcd.noBacklight();
       esp_deep_sleep_start();
 }
 void lcdprint(float distance__cm){
-  lcd.backlight(); //turn on backlight
   lcd.clear(); //clear lcd
   lcd.setCursor(0, 0);  // set cursor to first column, first row
   lcd.print("Water Level:"); // print message
