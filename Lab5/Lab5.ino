@@ -50,6 +50,7 @@ void setup() {
   //LCD INITIALIZATION
     // initialize LCD
   lcd.init();
+  lcd.backlight();
 
   //Set cursor value
   lcd.setCursor(0,0);
