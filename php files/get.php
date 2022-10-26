@@ -1,5 +1,11 @@
 <?php
-require "midsem.php";
+
+
+    $servername= "localhost";
+    $username="root";
+    $password="";
+    $dbname="waterworks";
+    $con = mysqli_connect($servername,$username,$password,$dbname);
 
 
     if (!isset($_GET['owner_id'])) 
@@ -11,7 +17,7 @@ require "midsem.php";
     
     $data=array();        
 
-    $q=mysqli_query($con,"select owner_id, place, level from water_level where owner_id={$_GET['owner_id']} order by owner_id desc");    
+    $q=mysqli_query($con,"select owner_id, place, level from water_level where owner_id={$_GET['owner_id']} order by owner_id DESC LIMIT 5");    
     
     $row=mysqli_fetch_object($q);
     while ($row)
