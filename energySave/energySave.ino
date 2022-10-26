@@ -14,6 +14,8 @@
 
 void lcdprint(float distance__cm);
 void empty_tank(float distance__cm);
+void sleep_wake();
+// void tank_system();
 
 WiFiMulti wifiMulti;
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
@@ -22,6 +24,7 @@ LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars
 int trigger_pin = 5;
 int echo_pin   = 18;
 int led_pin = 23;
+int Relaypin= 4;
 int distance_cm;
 
 void setup() {
@@ -38,10 +41,11 @@ void setup() {
     }
 
   wifiMulti.addAP("Ttbi", "yaakonadu1"); 
-
+ // declare pins as output
   pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
   pinMode(led_pin, OUTPUT);
+  pinMode(Relaypin, OUTPUT);
   delay(1000);
 
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
@@ -54,7 +58,7 @@ void setup() {
 }
 
 void loop() {
-  // wait for WiFi connection
+ // wait for WiFi connection
   if((wifiMulti.run() == WL_CONNECTED)) {
     digitalWrite(trigger_pin, LOW);
     delayMicroseconds(2);
@@ -95,22 +99,29 @@ void loop() {
         }
 
         http.end();
-          Serial.println("Going to sleep now");
-          Serial.flush(); 
-          esp_deep_sleep_start();
+          
     }
+  void sleep_wake();
 }
 
+// void tank_system(){
 
+// }
+
+void sleep_wake(){
+      lcd.print("Sleeping...");
+      //Serial.println("Going to sleep now");
+      delay(1000);
+      Serial.flush(); 
+      lcd.noBacklight();
+      esp_deep_sleep_start();
+}
 void lcdprint(float distance__cm){
-  //clear lcd
-  lcd.clear(); 
-   // set cursor to first column, first row
-  lcd.setCursor(0, 0);
-  // print message
-  lcd.print("Water Level:");
-  // set cursor to first column, second row
-  lcd.setCursor(0,1);
+  lcd.backlight(); //turn on backlight
+  lcd.clear(); //clear lcd
+  lcd.setCursor(0, 0);  // set cursor to first column, first row
+  lcd.print("Water Level:"); // print message
+  lcd.setCursor(0,1); // set cursor to first column, second row
   lcd.print(String(distance__cm));
   lcd.print("cm");
 }
@@ -118,10 +129,16 @@ void lcdprint(float distance__cm){
 void empty_tank(float distance__cm){
   if(distance__cm<15.00) {
     digitalWrite(led_pin, HIGH);
-    if(distance__cm>=100.0)
+    digitalWrite(Relaypin, LOW);
+	
+    if(distance__cm>=100.0){
     digitalWrite(led_pin, LOW);
+    digitalWrite(Relaypin, HIGH);
+    }
+   
   }
   else{
     digitalWrite(led_pin,LOW);
+    digitalWrite(Relaypin, HIGH);
   }
 }
