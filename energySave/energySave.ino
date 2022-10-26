@@ -14,6 +14,7 @@
 
 void lcdprint(float distance__cm);
 void empty_tank(float distance__cm);
+void sleep_wakeup();
 
 WiFiMulti wifiMulti;
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
@@ -54,6 +55,7 @@ void setup() {
 }
 
 void loop() {
+<<<<<<< Updated upstream
   // wait for WiFi connection
   if((wifiMulti.run() == WL_CONNECTED)) {
     digitalWrite(trigger_pin, LOW);
@@ -102,6 +104,27 @@ void loop() {
 }
 
 
+=======
+  digitalWrite(trigger_pin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigger_pin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigger_pin, LOW);
+  long duration = pulseIn(echo_pin, HIGH);
+  distance_cm = (duration / 2) / 29.09;
+  lcdprint(distance_cm);
+  empty_tank(distance_cm);
+
+  delay(3000);
+  
+}
+
+void sleep_wakeup(){
+  Serial.println("Going to sleep now");
+  Serial.flush(); 
+  esp_deep_sleep_start();
+}
+>>>>>>> Stashed changes
 void lcdprint(float distance__cm){
   //clear lcd
   lcd.clear(); 
