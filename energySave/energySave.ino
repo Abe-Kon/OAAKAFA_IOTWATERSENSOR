@@ -89,15 +89,15 @@ void loop() {
             if(httpCode == HTTP_CODE_OK) {
                 String payload = http.getString();
                 USE_SERIAL.println(payload);
-                Serial.println("Going to sleep now");
-                Serial.flush(); 
-                esp_deep_sleep_start();
             }
         } else {
             USE_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
         }
 
         http.end();
+          Serial.println("Going to sleep now");
+          Serial.flush(); 
+          esp_deep_sleep_start();
     }
 }
 
