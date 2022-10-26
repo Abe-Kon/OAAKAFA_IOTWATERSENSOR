@@ -11,7 +11,7 @@ require "midsem.php";
     
     $data=array();        
 
-    $q=mysqli_query($con,"select owner_id, place, level from water where owner_id={$_GET['owner_id']} order by owner_id desc 5");    
+    $q=mysqli_query($con,"select owner_id, place, level from water_level where owner_id={$_GET['owner_id']} order by owner_id desc");    
     
     $row=mysqli_fetch_object($q);
     while ($row)
