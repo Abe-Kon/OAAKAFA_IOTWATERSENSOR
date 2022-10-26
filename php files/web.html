@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<HTML>
+<head>
+	<title>Page title</title>
+</head>
+<body>
+	<h1> Illustrating AJAX and JS</h1>
+	<p>After interacting with the page, you can refresh the page to start over again.</p>
+
+	<h2> Illustrating with JS</h2>
+	<p>Changing next text with JS only: 
+		<div style="color:red;" id="js_update">Currently reads INITAL TEXT</div>
+	</p>
+	<button onclick="updateByJS()"> Click to change text </button>
+
+	
+	<hr />
+	<h1>Illustrating AJAX fetch of static text</h1>
+	<p> The text at the end will be replaced by static text fetched over the network: </p>
+		<div id="statictext"></div>
+		<button onclick="updateByAJAX_static()"> Click to insert text in page </button>
+
+	<h1>Illustrating AJAX fetch of dynamic content</h1>
+	<p> we will fetch details of one particular record in the db. You can enter an ID if you know one (eg id=1,...,6) </p>
+
+	<p>Enter a unique owner_id<input type="text" id="theText">  </p>
+	<p> <button onclick="updateByAJAX_dbData()">Fetch info</button></p>
+	<p> returned data is <div id="waterworks"></div></p>
+
+		
+
+	<script type="text/javascript">
+		var counter=0;
+		function updateByJS(){
+			counter++;
+			document.getElementById("js_update").innerText="This is the New Text, number of times pressed ="+counter;
+		}
+
+		function updateByAJAX_static(){
+			const xhttp=new XMLHttpRequest();
+			xhttp.onload=function(){
+				document.getElementById("statictext").innerText=this.responseText;
+			}
+			xhttp.open("GET", "/iot/get.php");
+			xhttp.send();
+		}
+		function updateByAJAX_dbData(){
+			const xhttp=new XMLHttpRequest();
+			xhttp.onload=function(){
+				document.getElementById("waterworks").innerText=this.responseText;
+			}
+			id=document.getElementById("theText").value;
+			console.log(id);
+			xhttp.open("GET", "/iot/get.php?owner_id="+id);
+			xhttp.send();
+		}
+
+	</script>
+
+</body>
+
+</HTML>
