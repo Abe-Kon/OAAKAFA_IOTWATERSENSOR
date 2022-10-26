@@ -13,7 +13,7 @@
 
 
 void lcdprint(float distance__cm);
-void empty_tank(float distance__cm);
+void check_tank(float distance__cm);
 void sleep_wake();
 // void tank_system();
 
@@ -51,9 +51,10 @@ void setup() {
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
 
   lcd.init(); // initialize LCD
+  lcd.backlight();
   lcd.setCursor(0,0);//Set cursor value
   lcd.print("Distance reading!");
-  delay(1000);
+  delay(500);
   lcd.clear();
 }
 
@@ -70,7 +71,6 @@ void loop() {
     distance_cm = (duration / 2) / 29.09;
 
     lcdprint(distance_cm);
-    empty_tank(distance_cm);
 
     HTTPClient http;
 
@@ -98,7 +98,7 @@ void loop() {
         }
 
         http.end();
-        sleep_wake();  
+        check_tank(distance_cm);
     }
 
 
@@ -111,7 +111,7 @@ void loop() {
 void sleep_wake(){
       Serial.println("Going to sleep now");
       Serial.flush(); 
-      delay(1500);
+      delay(500);
       lcd.clear();
       lcd.noBacklight();
       esp_deep_sleep_start();
@@ -127,19 +127,21 @@ void lcdprint(float distance__cm){
   lcd.print("cm");
 }
 
-void empty_tank(float distance__cm){
+void check_tank(float distance__cm){
   if(distance__cm<15.00) {
     digitalWrite(led_pin, HIGH);
     digitalWrite(Relaypin, LOW);
-	
+
     if(distance__cm>=100.0){
     digitalWrite(led_pin, LOW);
     digitalWrite(Relaypin, HIGH);
+    sleep_wake();  
     }
    
   }
   else{
     digitalWrite(led_pin,LOW);
     digitalWrite(Relaypin, HIGH);
+    sleep_wake();  
   }
 }
