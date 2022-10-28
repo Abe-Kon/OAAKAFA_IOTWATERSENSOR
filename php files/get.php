@@ -41,7 +41,6 @@
         </tr>
 
         ";
-        //echo " <br/>{$row->owner_id} {$row->place} {$row->level}<br/>";
         $row=mysqli_fetch_object($q);
     } 
     echo "</table>";     
