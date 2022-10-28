@@ -5,16 +5,23 @@
 
 #include <HTTPClient.h>
 #include <Wire.h> 
+#include <WebServer.h>
+#include <ESPmDNS.h>
 #include <LiquidCrystal_I2C.h>
 
 #define USE_SERIAL Serial
 #define uS_TO_S_FACTOR 1000000ULL
 #define TIME_TO_SLEEP  4*60
+#define tankheight 100 //cm
+#include "html.h"
 
 
 void lcdprint(float distance__cm);
 void check_tank(float distance__cm);
 void sleep_wake();
+void handleNotFound();
+void baseHandle():
+void manualfunct():
 // void tank_system();
 
 WiFiMulti wifiMulti;
@@ -26,13 +33,14 @@ int echo_pin   = 18;
 int led_pin = 23;
 int Relaypin= 4;
 int distance_cm;
+int manualState = LOW;
+
+WebServer server(80);
 
 void setup() {
    USE_SERIAL.begin(115200);
 
-    USE_SERIAL.println();
-    USE_SERIAL.println();
-    USE_SERIAL.println();
+    USE_SERIAL.println("-----------");
 
     for(uint8_t t = 4; t > 0; t--) {
         USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
@@ -41,6 +49,22 @@ void setup() {
     }
 
   wifiMulti.addAP("Ttbi", "yaakonadu1"); 
+
+  while(WiFi.status() != WL_CONNECTED){
+    delay(500);
+    Serial.print("Connected to WiFi network with IP Address: ");
+    Serial.println(WiFi.localIP());
+ 
+
+  server.on("/", baseHandle );
+
+  server.onNotFound(handleNotFound);
+  server.on("/client", GET_RQ);
+
+  server.begin();
+  Serial.println("Http server started");
+  server.on("/manualurl",manualfunct);
+
  // declare pins as output
   pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
@@ -57,8 +81,11 @@ void setup() {
   delay(500);
   lcd.clear();
 }
+}
 
 void loop() {
+  server.handleClient();
+  delay(2);
  // wait for WiFi connection
   if((wifiMulti.run() == WL_CONNECTED)) {
     digitalWrite(trigger_pin, LOW);
@@ -69,8 +96,9 @@ void loop() {
     
     long duration = pulseIn(echo_pin, HIGH);
     distance_cm = (duration / 2) / 29.09;
+    level = tankheight - distance_cm;
 
-    lcdprint(distance_cm);
+    lcdprint(level));
 
     HTTPClient http;
 
@@ -98,7 +126,7 @@ void loop() {
         }
 
         http.end();
-        check_tank(distance_cm);
+        check_tank(level));
     }
 
 
@@ -128,7 +156,9 @@ void lcdprint(float distance__cm){
 }
 
 void check_tank(float distance__cm){
-  if(distance__cm<15.00) {
+
+  if(manualState == LOW){
+    if (distance__cm<15.00) {
     digitalWrite(led_pin, HIGH);
     digitalWrite(Relaypin, LOW);
 
@@ -145,3 +175,51 @@ void check_tank(float distance__cm){
     sleep_wake();  
   }
 }
+}
+
+void handleNotFound(){
+  String message = "File Not Found\n\n";
+  message += "URI: ";
+  message += server.uri();
+  message += "\nMethod: ";
+  message += (server.method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nArguments: ";
+  message += server.args();
+  message += "\n";
+  
+  for (uint8_t i = 0; i < server.args(); i++) {
+    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+  }
+  server.send(404, "text/plain", message);
+  }
+
+ 
+
+  void baseHandle(){
+    
+    server.send(200, "text/html",page);
+    }
+
+   
+
+//   void LEDRfunct()
+// { if (manualState == HIGH){
+//   LEDR= !LEDR;
+//   digitalWrite(LED_PIN, LEDR);
+//   //counter++;
+//   String str = "OFF";    //very little returned
+//   if(LEDR == HIGH ) str = "ON";
+//   server.send(200, "text/plain", str);
+//   Serial.println("red");
+// }
+// }
+
+void manualfunct(){
+ if(manualState == HIGH){
+// manualState = !manualState
+   manualState = LOW;
+}
+ else{
+  manualState = HIGH;
+ }
+ }
