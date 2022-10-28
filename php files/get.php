@@ -14,6 +14,8 @@
         die(" Owner ID is blank");
     if (!is_numeric($_GET['owner_id'] ) )
         die(" Owner ID is not numeric");
+    if ($_GET['owner_id']>'3'||$_GET['owner_id']<'1')
+        die(" Owner ID does not exist");
     
     $data=array();        
 
