@@ -4,33 +4,30 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>midsemproject</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!--<link href="style.css" rel="stylesheet" type="text/css" />-->
     <meta name="Author" content="Akwasi Fredua Agyemang">
     <style>
         body {
-            margin-top: 50px;
-            font-family: Arial
-        }
-
-        body {
-            font-size: 20px;
+            font-family: Arial;
             text-align: center
         }
+
        
-        .btn {
+        /* .btn {
             display: block;
             width: 280px;
             margin: auto;
             padding: 30px
-        }
+        } */
 
-        .btn {
+        /* .btn {
             font-size: 30px;
             color: black;
             text-decoration: none
-        }
+        } */
         
         .on {
             background-color: SkyBlue
@@ -66,24 +63,38 @@
 
 <body>
     <nav class="navbar bg-light">
-        <!--<div class="container-fluid">-->
+        <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <img src="iot_logo.jpg" alt="Logo" width="40" height="55" class="d-inline-block align-text-top">
-            <h4>
-                <t>IOT PROJECT BY AKWASI, JIL AND ABENA</t>
-            </h4>
+            <div class="container-fluid" style="text-align: center;">
+                <img src="iot_logo.jpg" alt="Logo" width="30" height="25" class="d-inline-block align-text-top">
+            <!-- <h4> -->
+                IOT PROJECT BY AKWASI, JIL AND ABENA
+            <!-- </h4> -->
+            </div> 
         </a>
     </nav>
     <section>
-        <h1>
+        <h1 class="display-1">
             <p1>Water Level Dashboard</p1><br />
         </h1>
 
-        <h1>Illustrating AJAX fetch of dynamic content</h1>
-    <p> we will fetch details of one particular record in the db. You can enter an ID if you know one (eg id=1,...,6) </p>
+        <h1 class="text-muted"><em>Illustrating AJAX fetch of dynamic content</em></h1>
+        <div class="alert alert-dark" role="alert">
+            We will fetch details of one particular record in the db. You can enter an ID if you know one (eg id=1,...,6)
+          </div>
+   
+          <div class="mb-3 row">
+            <label for="theText" class="col-sm-2 col-form-label">Owner ID</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="theText" placeholder="Enter a unique owner id">
+            </div>
+            <div class="col-sm-2">
+                <button onclick="updateByAJAX_dbData()" class="btn btn-outline-primary mb-3">Fetch info</button>
+              </div>
+          </div>
+          
+          </section>
 
-    <p>Enter a unique owner_id<input type="text" id="theText">  </p>
-    <p> <button onclick="updateByAJAX_dbData()">Fetch info</button></p>
     <p><div id="waterworks"></div></p>
 
         
@@ -123,23 +134,30 @@
 
         -->
         <br /><br />
-        <table style='width:117%'>
+        <h1 id="stat" onclick='sendData(id)' class="display-4">Operation Mode</h1>
+        <table style='width:100%;margin-bottom: 10px;'>
             <tr>
-                <td>Manual</td>
-                <td>Automatic</td>
+                <th scope="col" style='width:50%'><h3>Manual</h3></th>
+                <th scope="col"><h3>Automatic</h3></th>
             </tr>
-            <tr id="stat" onclick='sendData(id)' style="font-size:50px">Operation Mode</tr>
+            <tr>
+                <td><button pill class='btn off btn-secondary col-2' id='Green LED' onclick='sendData(id)'>OFF</button>
+                 <td><button pill class='btn off btn-secondary col-2' id='Gren LED' onclick='sendData(id)'>OFF</button></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="d-grid gap-1 col-1 mx-auto">
+                    <button pill class="btn off btn-secondary btn-sm" type="button" id='Start' onclick='sendData_2(id)'>START</button>
+                    <button pill class="btn off btn-secondary btn-sm" type="button" id='Stop' onclick='sendData_2(id)'>STOP</button>
+                  </div>
+            </tr>
+                
         </table>
-        <table style='width:100%'>
-
-            <tr><td><b-button pill class='btn off' id='Green LED' onclick='sendData(id)'>OFF</b-button></td>-->
-            
-            <td><b-button pill class='btn off' id='Gren LED' onclick='sendData(id)'>OFF</b-button></td></tr><br/>
+        
                 <!--<div class="bg">
                     <ul>
                         <li><a><b-button class="btn btn-secondary dropdown-toggle btn off" type="button" data-bs-toggle="dropdown" aria-expanded="false" id='Green LED' onclick='sendData(id)'>OFF</a></b-button></td>-->
-            <tr><td><b-button pill class='btn off' id='Start' style = "font-size:20px;width:50px;" onclick='sendData(id)'>START</b-button></td></tr>
-            <tr><td><b-button pill class='btn off' id='Stop' style = "font-size:20px;width:50px;" onclick='sendData(id)'>STOP</b-button></td></tr></table>
+    
                     
                 
                 
@@ -148,49 +166,69 @@
 
 
         <script>
-            function sendData(butn) {
-                var URL, variab, text;
-                if (butn == 'Green LED') {
-                    URL = 'LEDRurl';
-                    variab = 'LEDR';
-                }
-                else if (butn == 'Gren LED') {
-                    URL = 'LEDGurl';
-                    variab = 'LEDG';
-                }
-                else if (butn == 'Start') {
-                    URL = 'STAurl';
-                    variab = 'STA';
-                }
-                else if (butn == 'Stop') {
-                    URL = 'STOurl';
-                    variab = 'STO';
+            function state_activate(x){
+                    var state = document.getElementById(x).className;
+                    state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    text = (state == 'btn on' ? ' ON' : ' OFF');
+                    document.getElementById(x).className = state;
+                    document.getElementById(x).innerHTML = text;
                 }
 
+            function sendData_2(butn2){
+                if (butn2 == 'Start') {
+                    state_activate(butn2);
+                }
+                else if (butn2 == 'Stop') {
+                    state_activate(butn2);
+                }
+            }
+
+            function sendData(butn) {
+                var URL, variab, text;
+                // automatic
+                if (butn == 'Green LED') { 
+                    URL = 'LEDRurl';
+                    variab = 'LEDR';
+                    state_activate(butn);
+                }
+                // manual
+                else if (butn == 'Gren LED'){
+                    URL = 'LEDGurl';
+                    variab = 'LEDG';
+                    state_activate(butn);
+                    sendData_2('Start');
+                    sendData_2('Stop');
+                }
+
+
+                
+                
+                
+
                 // change button class and text 
+                /*
                 if (butn == 'Gren LED') {
                     var state = document.getElementById(butn).className;
                     state = (state == 'btn on' ? 'btn off' : 'btn on');
                     text = (state == 'btn on' ? ' ON' : ' OFF');
                     document.getElementById(butn).className = state;
                     document.getElementById(butn).innerHTML = text;
-                    
+                    if(butn == 'Stop'){
+                        var state = document.getElementById(butn).className;
+                        state = (state == 'btn on' ? 'btn off' : 'btn on');
+                        text = (state == 'btn on' ? ' ON' : ' OFF');
+                        document.getElementById(butn).className = state;
+                        document.getElementById(butn).innerHTML = text;
+                    }
+                    else{
+                        var state = document.getElementById(butn).className;
+                        state = (state == 'btn on' ? 'btn off' : 'btn on');
+                        text = (state == 'btn on' ? ' ON' : ' OFF');
+                        document.getElementById(butn).className = state;
+                        document.getElementById(butn).innerHTML = text;
+                    } 
                     
                 }
-                if(butn == 'Stop'){
-                        var state = document.getElementById(butn).className;
-                        state = (state == 'btn on' ? 'btn off' : 'btn on');
-                        text = (state == 'btn on' ? ' ON' : ' OFF');
-                        document.getElementById(butn).className = state;
-                        document.getElementById(butn).innerHTML = text;
-                    }
-                    if(butn == 'Start'){
-                        var state = document.getElementById(butn).className;
-                        state = (state == 'btn on' ? 'btn off' : 'btn on');
-                        text = (state == 'btn on' ? ' ON' : ' OFF');
-                        document.getElementById(butn).className = state;
-                        document.getElementById(butn).innerHTML = text;
-                    }
 
                 else if(butn == 'Green LED'){
                     var state = document.getElementById(butn).className;
@@ -198,8 +236,11 @@
                     text = (state == 'btn on' ? ' ON' : ' OFF');
                     document.getElementById(butn).className = state;
                     document.getElementById(butn).innerHTML = text; 
-                      
+                   
                 }
+                */
+
+                
 
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function (butn) {
@@ -256,6 +297,7 @@
         </script>
 
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 
 </html>
