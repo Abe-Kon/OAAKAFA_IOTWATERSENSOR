@@ -19,25 +19,25 @@
     
     $data=array();        
 
-    $q=mysqli_query($con,"select owner_id, place, level from water_level where owner_id={$_GET['owner_id']} order by owner_id DESC LIMIT 5");    
+    $q=mysqli_query($con,"select owner_id, place, level from water_level where owner_id={$_GET['owner_id']} order by level DESC LIMIT 5");    
     
     $row=mysqli_fetch_object($q);
     
     echo "
-        <table>
-            <tr>
-                <td>col1</td>
-                <td>col1</td>
-                <td>col1</td>
+      <table align='center' width='70%'>;
+            <tr bgcolor='#C27BA0'>
+                <th><font color='#FFFFFF'>Owner ID</th>
+                <th><font color='#FFFFFF'>Location</th>
+                <th><font color='#FFFFFF'>Water Level</th>
             </tr>
     ";
     while ($row)
     {         
         echo "
-        <tr>
-                    <td>{$row->owner_id}</td>
-                    <td>{$row->place} </td>
-                    <td>{$row->level}</td>
+        <tr bgcolor='#C27BA0'><font color='#FFFFFF'>
+                    <td><font color='#FFFFFF'>{$row->owner_id}</td>
+                    <td><font color='#FFFFFF'>{$row->place} </td>
+                    <td><font color='#FFFFFF'>{$row->level}</td>
         </tr>
 
         ";
