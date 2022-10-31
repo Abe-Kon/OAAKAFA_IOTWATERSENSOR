@@ -6,7 +6,6 @@
 #include <HTTPClient.h>
 #include <Wire.h> 
 #include <WebServer.h>
-#include <ESPmDNS.h>
 #include <LiquidCrystal_I2C.h>
 
 #define USE_SERIAL Serial
@@ -20,8 +19,10 @@ void lcdprint(float distance__cm);
 void check_tank(float distance__cm);
 void sleep_wake();
 void handleNotFound();
-void baseHandle():
-void manualfunct():
+void handleRoot();
+void autoOP();
+void manStartOP();
+void manStopOP();
 // void tank_system();
 
 WiFiMulti wifiMulti;
@@ -33,12 +34,19 @@ int echo_pin   = 18;
 int led_pin = 23;
 int Relaypin= 4;
 int distance_cm;
-int manualState = LOW;
+int State = 0;
 
 WebServer server(80);
 
 void setup() {
-   USE_SERIAL.begin(115200);
+  // declare pins as output
+  pinMode(trigger_pin, OUTPUT);
+  pinMode(echo_pin, INPUT);
+  pinMode(led_pin, OUTPUT);
+  pinMode(Relaypin, OUTPUT);
+  delay(1000);
+
+    USE_SERIAL.begin(115200);
 
     USE_SERIAL.println("-----------");
 
@@ -56,24 +64,21 @@ void setup() {
     Serial.println(WiFi.localIP());
  
 
-  server.on("/", baseHandle );
+  server.on("/", handleRoot);
+  server.on("/Automatic", autoOP);
+  server.on("/Start", manStartOP);
+  server.on("/Stop", manStopOP);
 
   server.onNotFound(handleNotFound);
-  server.on("/client", GET_RQ);
+  //server.on("/client", RQ);
 
   server.begin();
   Serial.println("Http server started");
-  server.on("/manualurl",manualfunct);
 
- // declare pins as output
-  pinMode(trigger_pin, OUTPUT);
-  pinMode(echo_pin, INPUT);
-  pinMode(led_pin, OUTPUT);
-  pinMode(Relaypin, OUTPUT);
-  delay(1000);
 
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
 
+  digitalWrite(Relaypin, HIGH);
   lcd.init(); // initialize LCD
   lcd.backlight();
   lcd.setCursor(0,0);//Set cursor value
@@ -96,9 +101,8 @@ void loop() {
     
     long duration = pulseIn(echo_pin, HIGH);
     distance_cm = (duration / 2) / 29.09;
-    level = tankheight - distance_cm;
 
-    lcdprint(level));
+    lcdprint(distance_cm);
 
     HTTPClient http;
 
@@ -126,7 +130,7 @@ void loop() {
         }
 
         http.end();
-        check_tank(level));
+        check_tank(distance_cm);
     }
 
 
@@ -157,7 +161,7 @@ void lcdprint(float distance__cm){
 
 void check_tank(float distance__cm){
 
-  if(manualState == LOW){
+  if(State == 0){
     if (distance__cm<15.00) {
     digitalWrite(led_pin, HIGH);
     digitalWrite(Relaypin, LOW);
@@ -167,14 +171,20 @@ void check_tank(float distance__cm){
     digitalWrite(Relaypin, HIGH);
     sleep_wake();  
     }
-   
+    }
+   }
+
+  else if (State == 1){
+    digitalWrite(led_pin,HIGH);
+    digitalWrite(Relaypin, LOW); 
   }
-  else{
+
+  else if (State == 2){
     digitalWrite(led_pin,LOW);
     digitalWrite(Relaypin, HIGH);
-    sleep_wake();  
+    //sleep_wake();  
   }
-}
+
 }
 
 void handleNotFound(){
@@ -195,12 +205,22 @@ void handleNotFound(){
 
  
 
-  void baseHandle(){
+  void handleRoot(){
     
     server.send(200, "text/html",page);
     }
 
-   
+  void autoOP (){
+    State = 0;
+  }
+
+  void manStartOP (){
+    State = 1;
+  }
+
+  void manStopOP(){
+    State = 2;
+  }
 
 //   void LEDRfunct()
 // { if (manualState == HIGH){
@@ -214,12 +234,12 @@ void handleNotFound(){
 // }
 // }
 
-void manualfunct(){
- if(manualState == HIGH){
-// manualState = !manualState
-   manualState = LOW;
-}
- else{
-  manualState = HIGH;
- }
- }
+// void manualfunct(){
+//  if(manualState == HIGH){
+// // manualState = !manualState
+//    manualState = LOW;
+// }
+//  else{
+//   manualState = HIGH;
+//  }
+//  }

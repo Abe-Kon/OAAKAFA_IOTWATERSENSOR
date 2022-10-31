@@ -47,11 +47,18 @@ char page[] PROGMEM = R"(
             margin-right: auto;
         }
        
-
-        td {
+        body {
+        background-color:#BDB7C9;
+       }
+        th,td {
             font-size: 30px;
             margin-top: 50px;
-            margin-bottom: 5px
+            margin-bottom: 5px;
+            padding-top: 10px;
+            padding-bottom: 20px;
+            padding-left: 30px;
+            padding-right: 40px;
+            border-color: #FFFFFF;
         }    
 
         p {
@@ -90,14 +97,34 @@ char page[] PROGMEM = R"(
               <input type="text" class="form-control" id="theText" placeholder="Enter a unique owner id">
             </div>
             <div class="col-sm-2">
-                <button onclick="updateByAJAX_dbData()" class="btn btn-outline-primary mb-3">Fetch info</button>
-          </div>
+                <button onclick='updateByAJAX_dbData()' class="btn btn-outline-primary mb-3">Fetch info</button>
+              </div>
           </div>
           
           </section>
 
     <p><div id="waterworks"></div></p>
-
+    
+    <br /><br />
+    <h1 style="color:White;" id="stat" onclick='sendData(id)' class="display-4">Operation Mode</h1>
+    <table style='width:100%;margin-bottom: 10px;'>
+        <tr>
+            <th scope="col" style='width:50%'><h3>Manual</h3></th>
+            <th scope="col"><h3>Automatic</h3></th>
+        </tr>
+        <tr>
+            <td><button pill class='btn off btn-secondary col-2' id='Green LED' onclick='sendData(id)'>OFF</button>
+             <td><button pill class='btn off btn-secondary col-2' id='Gren LED' onclick='sendData(id)'>OFF</button></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="d-grid gap-1 col-1 mx-auto">
+                <button pill class="btn off btn-secondary btn-sm" type="button" id='Start' onclick='sendData_2(id)'>START</button>
+                <button pill class="btn off btn-secondary btn-sm" type="button" id='Stop' onclick='sendData_2(id)'>STOP</button>
+              </div>
+        </tr>
+            
+    </table>
         
 <!--
     
@@ -161,8 +188,51 @@ char page[] PROGMEM = R"(
     
                     
                 
+                
+           
+
+
 
         <script>
+            function autoStart(butn){
+                var URL,variab,text;
+                if (butn =='Automatic'){
+                    URL = 'Automatic';
+                }
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function (butn){
+                    if(this.readyState == 4 && this.status == 200){
+                        document.getElementById(variab).innerHTML =this.responseText;};
+                        xhr.open('GET',URL,true);
+                        xhr.send();
+                }
+            }
+            function manStart(butn){
+                var URL,variab,text;
+                if (butn =='Start'){
+                    URL = 'Start';
+                }
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function (butn){
+                    if(this.readyState == 4 && this.status == 200){
+                        document.getElementById(variab).innerHTML =this.responseText;};
+                        xhr.open('GET',URL,true);
+                        xhr.send();
+                }
+            }
+            function manStop(butn){
+                var URL,variab,text;
+                if (butn =='Stop'){
+                    URL = 'Stop';
+                }
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function (butn){
+                    if(this.readyState == 4 && this.status == 200){
+                        document.getElementById(variab).innerHTML =this.responseText;};
+                        xhr.open('GET',URL,true);
+                        xhr.send();
+                }
+            }
             function state_activate(x){
                     var state = document.getElementById(x).className;
                     state = (state == 'btn on' ? 'btn off' : 'btn on');
@@ -170,36 +240,101 @@ char page[] PROGMEM = R"(
                     document.getElementById(x).className = state;
                     document.getElementById(x).innerHTML = text;
                 }
+            
+            function state_deactivate(x){
+                var state = document.getElementById(x).className;
+                    state = (state == 'btn off');
+                    text = (state == ' OFF');
+                    document.getElementById(x).className = state;
+                    document.getElementById(x).innerHTML = text;
+            }
 
             function sendData_2(butn2){
+                var URL, variab, text;
+                URL = 'LEDGurl';
+                variab = 'LEDG';
                 if (butn2 == 'Start') {
-                    state_activate(butn2);
+                    var state = document.getElementById(butn2).className;
+                    state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    text = (state == 'btn on' ? ' Start' : ' Start');
+                    document.getElementById(x).className = state;
+                    document.getElementById(x).innerHTML = text;
+                    //state_activate(butn2);
                 }
-                else if (butn2 == 'Stop') {
-                    state_activate(butn2);
+                else{
+                    var state = document.getElementById(butn2).className;
+                    state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    text = (state == 'btn on' ? ' Stop' : ' Stop');
+                    document.getElementById(x).className = state;
+                    document.getElementById(x).innerHTML = text;
+                    //state_activate(butn2);
                 }
             }
 
             function sendData(butn) {
                 var URL, variab, text;
                 // automatic
-                if (butn == 'Green LED') { 
+                if (butn == 'Gren LED') { 
                     URL = 'LEDRurl';
                     variab = 'LEDR';
                     state_activate(butn);
+                    state_deactivate('Green Led');
                 }
                 // manual
-                else if (butn == 'Gren LED'){
+                else{// if (butn == 'Green LED')
                     URL = 'LEDGurl';
                     variab = 'LEDG';
                     state_activate(butn);
-                    sendData_2('Start');
-                    sendData_2('Stop');
+                    state_deactivate('Gren Led');
+                    if(butn == 'Start'){
+                        sendData_2('Start');
+                    }
+                    else{
+                        sendData_2('Stop');
+                    }
                 }
 
 
-                // change button class and text
-                            
+                
+                
+                
+
+                // change button class and text 
+                /*
+                if (butn == 'Gren LED') {
+                    var state = document.getElementById(butn).className;
+                    state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    text = (state == 'btn on' ? ' ON' : ' OFF');
+                    document.getElementById(butn).className = state;
+                    document.getElementById(butn).innerHTML = text;
+                    if(butn == 'Stop'){
+                        var state = document.getElementById(butn).className;
+                        state = (state == 'btn on' ? 'btn off' : 'btn on');
+                        text = (state == 'btn on' ? ' ON' : ' OFF');
+                        document.getElementById(butn).className = state;
+                        document.getElementById(butn).innerHTML = text;
+                    }
+                    else{
+                        var state = document.getElementById(butn).className;
+                        state = (state == 'btn on' ? 'btn off' : 'btn on');
+                        text = (state == 'btn on' ? ' ON' : ' OFF');
+                        document.getElementById(butn).className = state;
+                        document.getElementById(butn).innerHTML = text;
+                    } 
+                    
+                }
+
+                else if(butn == 'Green LED'){
+                    var state = document.getElementById(butn).className;
+                    state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    text = (state == 'btn on' ? ' ON' : ' OFF');
+                    document.getElementById(butn).className = state;
+                    document.getElementById(butn).innerHTML = text; 
+                   
+                }
+                */
+
+                
 
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function (butn) {
@@ -260,4 +395,5 @@ char page[] PROGMEM = R"(
 </body>
 
 </html>
+
 )";
