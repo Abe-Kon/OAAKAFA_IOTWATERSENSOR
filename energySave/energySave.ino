@@ -1,7 +1,11 @@
+// Submission by Abena, Jil and Akwasi for
+// a wwater level sensor
+
 #include <Arduino.h>
 
 #include <WiFi.h>
 #include <WiFiMulti.h>
+#include <ESPmDNS.h>
 
 #include <HTTPClient.h>
 #include <Wire.h> 
@@ -14,6 +18,7 @@
 #define tankheight 100 //cm
 #include "html.h"
 
+int counter = 0;
 
 void lcdprint(float distance__cm);
 void check_tank(float distance__cm);
@@ -40,6 +45,7 @@ WebServer server(80);
 
 void setup() {
   // declare pins as output
+ Serial.print("set up started");
   pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
   pinMode(led_pin, OUTPUT);
@@ -48,36 +54,48 @@ void setup() {
 
     USE_SERIAL.begin(115200);
 
-    USE_SERIAL.println("-----------");
+    USE_SERIAL.println("--------///---");
 
-    for(uint8_t t = 4; t > 0; t--) {
-        USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
-        USE_SERIAL.flush();
-        delay(1000);
-    }
 
-  wifiMulti.addAP("Ttbi", "yaakonadu1"); 
+    WiFi.mode(WIFI_STA);
+    WiFi.begin("Ak", "dbh10ctorn");
+    Serial.println("passed stage 1");
+
+
+  
 
   while(WiFi.status() != WL_CONNECTED){
     delay(500);
+    Serial.print(".");
+  }
+  wifiMulti.addAP("Ak", "dbh10ctorn"); 
     Serial.print("Connected to WiFi network with IP Address: ");
     Serial.println(WiFi.localIP());
+  
  
+  if(MDNS.begin("esp32")){
+    Serial.println("MDNS Started..");
+  }
 
   server.on("/", handleRoot);
   server.on("/Automatic", autoOP);
   server.on("/Start", manStartOP);
   server.on("/Stop", manStopOP);
+  server.on("/sendData", getData);
 
   server.onNotFound(handleNotFound);
-  //server.on("/client", RQ);
+
 
   server.begin();
   Serial.println("Http server started");
 
 
+<<<<<<< Updated upstream
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
 <<<<<<< Updated upstream
+=======
+  //esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+>>>>>>> Stashed changes
 
 =======
 >>>>>>> Stashed changes
@@ -88,10 +106,15 @@ void setup() {
   lcd.print("Distance reading!");
   delay(500);
   lcd.clear();
-}
+  Serial.println("set up ended");
 }
 
+
+
 void loop() {
+  Serial.println("loop started");
+  
+
   server.handleClient();
   delay(2);
  // wait for WiFi connection
@@ -112,11 +135,18 @@ void loop() {
         USE_SERIAL.print("[HTTP] begin...\n");
         // configure traged server and url
         //http.begin("https://www.howsmyssl.com/a/check", ca); //HTTPS
+<<<<<<< Updated upstream
         http.begin("http://192.168.201.242/iot/midsem_insert.php?owner_id=1&place=Abena&level="+String(distance_cm)); //HTTP
+=======
+        http.begin("http://172.20.10.2/iot/midsem_insert.php?owner_id=3&place=Akwasi&level="+String(distance_cm)); //HTTP
+>>>>>>> Stashed changes
 
         USE_SERIAL.print("[HTTP] GET...\n");
         // start connection and send HTTP header
         int httpCode = http.GET();
+
+        // added Frk
+        Serial.println("http://172.20.10.2/iot/midsem_insert.php?owner_id=1&place=Abena&level="+String(distance_cm));
 
         // httpCode will be negative on error
         if(httpCode > 0) {
@@ -134,14 +164,11 @@ void loop() {
 
         http.end();
         check_tank(distance_cm);
+      
     }
 
 
 }
-
-// void tank_system(){
-
-// }
 
 void sleep_wake(){
       Serial.println("Going to sleep now");
@@ -149,7 +176,7 @@ void sleep_wake(){
       delay(500);
       lcd.clear();
       lcd.noBacklight();
-      esp_deep_sleep_start();
+     // esp_deep_sleep_start();
 
 }
 void lcdprint(float distance__cm){
@@ -164,28 +191,36 @@ void lcdprint(float distance__cm){
 }
 
 void check_tank(float distance__cm){
-
   if(State == 0){
     if (distance__cm<15.00) {
     digitalWrite(led_pin, HIGH);
     digitalWrite(Relaypin, LOW);
+<<<<<<< Updated upstream
     // delay(5000);
+=======
+    }
+>>>>>>> Stashed changes
 
-    if(distance__cm>=100.0){
+    else if(distance__cm>=100.0){
     digitalWrite(led_pin, LOW);
     digitalWrite(Relaypin, HIGH);
+<<<<<<< Updated upstream
     // delay(5000);
     //sleep_wake();  
     }
+=======
+    //sleep_wake();  
+>>>>>>> Stashed changes
     }
+    
    }
 
-  else if (State == 1){
+  else if (State == 1 && counter == 1){
     digitalWrite(led_pin,HIGH);
     digitalWrite(Relaypin, LOW); 
   }
 
-  else if (State == 2){
+  else if (State == 2 && counter == 1){
     digitalWrite(led_pin,LOW);
     digitalWrite(Relaypin, HIGH);
     //sleep_wake();  
@@ -218,37 +253,37 @@ void handleNotFound(){
     
     server.send(200, "text/html",page);
     }
+  
+
+  void getData(){
+    Serial.println(distance_cm);
+    server.send(200, "text/plain",String(distance_cm));
+    
+  }
 
   void autoOP (){
-    State = 0;
+    if (counter == 0){
+      counter=1;
+      State = 3; // any unknown state
+    }
+    else if(counter == 1){
+      counter = 0;
+      State = 0;
+    }
+        
+
   }
 
   void manStartOP (){
-    State = 1;
+    if(counter == 1){
+      State = 1;
+    }
+    
   }
 
   void manStopOP(){
-    State = 2;
+    if(counter ==1){
+      State = 2;
+    }
   }
 
-//   void LEDRfunct()
-// { if (manualState == HIGH){
-//   LEDR= !LEDR;
-//   digitalWrite(LED_PIN, LEDR);
-//   //counter++;
-//   String str = "OFF";    //very little returned
-//   if(LEDR == HIGH ) str = "ON";
-//   server.send(200, "text/plain", str);
-//   Serial.println("red");
-// }
-// }
-
-// void manualfunct(){
-//  if(manualState == HIGH){
-// // manualState = !manualState
-//    manualState = LOW;
-// }
-//  else{
-//   manualState = HIGH;
-//  }
-//  }

@@ -90,22 +90,16 @@ char page[] PROGMEM = R"(
         <div class="alert alert-dark" role="alert">
             We will fetch details of one particular record in the db. You can enter an ID if you know one (eg id=1,...,6)
           </div>
-   
-          <div class="mb-3 row">
-            <label for="theText" class="col-sm-2 col-form-label">Owner ID</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" id="theText" placeholder="Enter a unique owner id">
-            </div>
-            <div class="col-sm-2">
-                <button onclick='updateByAJAX_dbData()' class="btn btn-outline-primary mb-3">Fetch info</button>
-              </div>
-          </div>
+
+            <p><div id="waterworks">init</div></p>
           
           </section>
 
-    <p><div id="waterworks"></div></p>
+    
     
     <br /><br />
+
+          <br /><br />
     <h1 style="color:White;" id="stat" onclick='sendData(id)' class="display-4">Operation Mode</h1>
     <table style='width:100%;margin-bottom: 10px;'>
         <tr>
@@ -113,80 +107,20 @@ char page[] PROGMEM = R"(
             <th scope="col"><h3>Automatic</h3></th>
         </tr>
         <tr>
-            <td><button pill class='btn off btn-secondary col-2' id='Green LED' onclick='sendData(id)'>OFF</button>
-             <td><button pill class='btn off btn-secondary col-2' id='Gren LED' onclick='sendData(id)'>OFF</button></td>
+           <!-- <td><button pill class='btn off btn-secondary col-2' id='Green LED' onclick='sendData(id)'>OFF</button> -->
+          <td><button pill class="btn off btn-secondary btn-sm" type="button" id='Start' onclick='sendData_2(id)'>START</button></td>
+          <td><button pill class="btn on btn-secondary col-2" id='Gren LED' onclick='sendData(id)'>ON</button></td> 
+
         </tr>
         <tr>
             <td>
                 <div class="d-grid gap-1 col-1 mx-auto">
-                <button pill class="btn off btn-secondary btn-sm" type="button" id='Start' onclick='sendData_2(id)'>START</button>
                 <button pill class="btn off btn-secondary btn-sm" type="button" id='Stop' onclick='sendData_2(id)'>STOP</button>
               </div>
         </tr>
             
     </table>
-        
-<!--
-    
-        <table style = 'width:100%' class="table table-hover">
-
-            <thead>
-                <tr>
-                    <th scope="col">Tank#</th>
-                    <th scope="col">Owner</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Water Level</th>
-                </tr>
-                
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>--</td>
-                    <td>--</td>
-                    <td>--</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>--</td>
-                    <td>--</td>
-                    <td>--</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>--</td>
-                    <td>--</td>
-                    <td>--</td>
-                </tr>
-            </tbody>
-
-        -->
-        <br /><br />
-        <h1 id="stat" onclick='sendData(id)' class="display-4">Operation Mode</h1>
-        <table style='width:100%;margin-bottom: 10px;'>
-            <tr>
-                <th scope="col" style='width:50%'><h3>Manual</h3></th>
-                <th scope="col"><h3>Automatic</h3></th>
-            </tr>
-            <tr>
-                <td><button pill class='btn off btn-secondary col-2' id='Green LED' onclick='sendData(id)'>OFF</button>
-                 <td><button pill class='btn off btn-secondary col-2' id='Gren LED' onclick='sendData(id)'>OFF</button></td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="d-grid gap-1 col-1 mx-auto">
-                    <button pill class="btn off btn-secondary btn-sm" type="button" id='Start' onclick='sendData_2(id)'>START</button>
-                    <button pill class="btn off btn-secondary btn-sm" type="button" id='Stop' onclick='sendData_2(id)'>STOP</button>
-                  </div>
-            </tr>
-                
-        </table>
-        
-                <!--<div class="bg">
-                    <ul>
-                        <li><a><b-button class="btn btn-secondary dropdown-toggle btn off" type="button" data-bs-toggle="dropdown" aria-expanded="false" id='Green LED' onclick='sendData(id)'>OFF</a></b-button></td>-->
-    
-                    
+           
                 
                 
            
@@ -236,7 +170,7 @@ char page[] PROGMEM = R"(
             function state_activate(x){
                     var state = document.getElementById(x).className;
                     state = (state == 'btn on' ? 'btn off' : 'btn on');
-                    text = (state == 'btn on' ? ' ON' : ' OFF');
+                    text = (state == 'btn on' ? ' OFF' : ' ON');
                     document.getElementById(x).className = state;
                     document.getElementById(x).innerHTML = text;
                 }
@@ -254,87 +188,23 @@ char page[] PROGMEM = R"(
                 URL = 'LEDGurl';
                 variab = 'LEDG';
                 if (butn2 == 'Start') {
-                    var state = document.getElementById(butn2).className;
-                    state = (state == 'btn on' ? 'btn off' : 'btn on');
-                    text = (state == 'btn on' ? ' Start' : ' Start');
-                    document.getElementById(x).className = state;
-                    document.getElementById(x).innerHTML = text;
+                    //var state = document.getElementById(butn2).className;
+                    //state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    //text = (state == 'btn on' ? ' Start' : ' Start');
+                    //document.getElementById(x).className = state;
+                    //document.getElementById(x).innerHTML = text;
                     //state_activate(butn2);
+                    URL = 'Start';
                 }
-                else{
-                    var state = document.getElementById(butn2).className;
-                    state = (state == 'btn on' ? 'btn off' : 'btn on');
-                    text = (state == 'btn on' ? ' Stop' : ' Stop');
-                    document.getElementById(x).className = state;
-                    document.getElementById(x).innerHTML = text;
+                if (butn2 == 'Stop'){
+                    //var state = document.getElementById(butn2).className;
+                    //state = (state == 'btn on' ? 'btn off' : 'btn on');
+                    //text = (state == 'btn on' ? ' Stop' : ' Stop');
+                    //document.getElementById(x).className = state;
+                    //document.getElementById(x).innerHTML = text;
                     //state_activate(butn2);
+                    URL = 'Stop';
                 }
-            }
-
-            function sendData(butn) {
-                var URL, variab, text;
-                // automatic
-                if (butn == 'Gren LED') { 
-                    URL = 'LEDRurl';
-                    variab = 'LEDR';
-                    state_activate(butn);
-                    state_deactivate('Green Led');
-                }
-                // manual
-                else{// if (butn == 'Green LED')
-                    URL = 'LEDGurl';
-                    variab = 'LEDG';
-                    state_activate(butn);
-                    state_deactivate('Gren Led');
-                    if(butn == 'Start'){
-                        sendData_2('Start');
-                    }
-                    else{
-                        sendData_2('Stop');
-                    }
-                }
-
-
-                
-                
-                
-
-                // change button class and text 
-                /*
-                if (butn == 'Gren LED') {
-                    var state = document.getElementById(butn).className;
-                    state = (state == 'btn on' ? 'btn off' : 'btn on');
-                    text = (state == 'btn on' ? ' ON' : ' OFF');
-                    document.getElementById(butn).className = state;
-                    document.getElementById(butn).innerHTML = text;
-                    if(butn == 'Stop'){
-                        var state = document.getElementById(butn).className;
-                        state = (state == 'btn on' ? 'btn off' : 'btn on');
-                        text = (state == 'btn on' ? ' ON' : ' OFF');
-                        document.getElementById(butn).className = state;
-                        document.getElementById(butn).innerHTML = text;
-                    }
-                    else{
-                        var state = document.getElementById(butn).className;
-                        state = (state == 'btn on' ? 'btn off' : 'btn on');
-                        text = (state == 'btn on' ? ' ON' : ' OFF');
-                        document.getElementById(butn).className = state;
-                        document.getElementById(butn).innerHTML = text;
-                    } 
-                    
-                }
-
-                else if(butn == 'Green LED'){
-                    var state = document.getElementById(butn).className;
-                    state = (state == 'btn on' ? 'btn off' : 'btn on');
-                    text = (state == 'btn on' ? ' ON' : ' OFF');
-                    document.getElementById(butn).className = state;
-                    document.getElementById(butn).innerHTML = text; 
-                   
-                }
-                */
-
-                
 
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function (butn) {
@@ -345,15 +215,47 @@ char page[] PROGMEM = R"(
                 xhr.open('GET', URL, true);
                 xhr.send();
             }
+
+            function sendData(butn) {
+                var URL, variab, text;
+                // automatic
+                if (butn == 'Gren LED') { 
+                    URL = 'Automatic';
+                    variab = 'LEDR';
+                    state_activate(butn);
+                    //state_deactivate('Gren Led');
+                }
+                // manual
+                else{// if (butn == 'Green LED')
+                    URL = 'LEDGurl';
+                    variab = 'Automatic';
+                    state_activate(butn);
+                    state_deactivate('Gren Led');
+                    if(butn == 'Start'){
+                        sendData_2('Start');
+                    }
+                    else{
+                        sendData_2('Stop');
+                    }
+                }
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function (butn) {
+                    if (this.readyState == 4 && this.status == 200)
+                        document.getElementById(variab).innerHTML = this.
+                            responseText;
+                };
+                xhr.open('GET', URL, true);
+                xhr.send();
+            }
+
             setInterval(reload, 1000);
             function reload() {
                 var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200)
-                        document.getElementById('counter').innerHTML = this.
-                            responseText;
-                };
-                xhr.open('GET', 'countUrl', true);
+              xhr.onload=function(){
+                console.log(this.responseText);
+                document.getElementById("waterworks").innerHTML=this.responseText;
+            }
+                xhr.open('GET', 'sendData', true);
                 xhr.send();
             }
         </script>
@@ -373,6 +275,8 @@ char page[] PROGMEM = R"(
             xhttp.open("GET", "/iot/get.php");
             xhttp.send();
         }
+
+
         function updateByAJAX_dbData(){
             const xhttp=new XMLHttpRequest();
             xhttp.onload=function(){
@@ -382,6 +286,7 @@ char page[] PROGMEM = R"(
             id=document.getElementById("theText").value;
             console.log(id);
             
+            var url = 
 
             xhttp.open("GET", "/iot/get.php?owner_id="+id);
             xhttp.send();
